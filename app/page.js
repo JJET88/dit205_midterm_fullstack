@@ -1,12 +1,22 @@
-"use client"
-import React from 'react'
-import ProductList from '@/components/ProductList'
+"use client";
+import AccessDeny from "@/components/AccessDeny";
+import ProductList from "@/components/ProductList";
+import UserProfile from "@/components/UserProfile";
+import { useSession } from "next-auth/react";
 
 export default function page() {
-  return (
-    <div>
-      <ProductList />
-    </div>
-  )
-}
+	const { data: session } = useSession();
 
+	if (!session) return <AccessDeny />;
+
+	return (
+		<div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 relative">
+			{/* Top Navigation Bar */}
+			<UserProfile />
+			{/* Main Content */}
+			<div className="relative">
+				<ProductList />
+			</div>
+		</div>
+	);
+}

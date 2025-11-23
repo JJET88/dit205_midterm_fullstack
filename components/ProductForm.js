@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// Toast placeholder
 const showToast = (message, type) => {
   console.log(`[${type}] ${message}`);
 };
@@ -22,7 +21,6 @@ export default function ProductForm({ productId }) {
   const [fetching, setFetching] = useState(false);
   const router = useRouter();
 
-  // If editing, fetch existing product
   useEffect(() => {
     if (!productId) return;
 
@@ -55,8 +53,7 @@ export default function ProductForm({ productId }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setLoading(true);
 
     try {
@@ -93,70 +90,117 @@ export default function ProductForm({ productId }) {
 
   if (fetching)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
-        <span className="text-gray-600 animate-pulse">Loading product data...</span>
+      <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 relative overflow-hidden">
+        {/* Decorative background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -left-40 w-80 h-80 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        </div>
+        
+        <div className="relative z-10">
+          <div className="w-16 h-16 border-4 border-indigo-300 border-t-indigo-600 rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-700 font-medium">Loading product...</p>
+        </div>
+
+        <style jsx>{`
+          @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+          }
+          .animate-blob {
+            animation: blob 7s infinite;
+          }
+          .animation-delay-2000 {
+            animation-delay: 2s;
+          }
+        `}</style>
       </div>
     );
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50 p-6">
-      <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-xl border border-gray-100">
-        <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
-          🛍️ {productId ? "Edit Product" : "Create New Product"}
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 py-8 px-4 sm:px-6 relative overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-blob"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-blob animation-delay-4000"></div>
+      </div>
+
+      {/* Form Container */}
+      <div className="relative z-10 max-w-3xl mx-auto bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white px-6 sm:px-8 py-6">
+          <h1 className="text-2xl sm:text-3xl font-bold">
+            {productId ? "✏️ Edit Product" : "➕ Create New Product"}
+          </h1>
+          <p className="text-indigo-100 text-sm mt-1">
+            {productId ? "Update product information" : "Fill in the details below"}
+          </p>
+        </div>
+
+        {/* Form */}
+        <div className="p-6 sm:p-8 space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Product Title *
+            </label>
             <input
               name="title"
               type="text"
-              placeholder="Product title"
+              placeholder="Enter product name"
               value={form.title}
               onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 transition"
+              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition-all shadow-sm"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Description *
+            </label>
             <textarea
               name="description"
               rows="4"
-              placeholder="Product description..."
+              placeholder="Describe your product..."
               value={form.description}
               onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 resize-none transition"
+              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none resize-none transition-all shadow-sm"
             />
           </div>
 
-          {/* Price & Category */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Price & Category Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Price (USD)</label>
-              <input
-                name="price"
-                type="number"
-                step="0.01"
-                value={form.price}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 transition"
-              />
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Price (USD) *
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+                <input
+                  name="price"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={form.price}
+                  onChange={handleChange}
+                  className="w-full pl-8 pr-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition-all shadow-sm"
+                />
+              </div>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Category *
+              </label>
               <select
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 transition"
+                className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition-all shadow-sm"
               >
-                <option value="">-- Select Category --</option>
+                <option value="">Select category</option>
                 <option value="men's clothing">Men&apos;s Clothing</option>
                 <option value="women's clothing">Women&apos;s Clothing</option>
                 <option value="jewelery">Jewelery</option>
@@ -165,81 +209,130 @@ export default function ProductForm({ productId }) {
             </div>
           </div>
 
-          {/* Image URL & Preview */}
+          {/* Image URL */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Image URL</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Image URL *
+            </label>
             <input
               name="image"
-              type="text"
-              placeholder="https://example.com/product.png"
+              type="url"
+              placeholder="https://example.com/image.jpg"
               value={form.image}
               onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 transition"
+              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition-all shadow-sm"
             />
+            
+            {/* Image Preview */}
             {form.image && (
               <div className="mt-4 flex justify-center">
-                <img
-                  src={form.image}
-                  alt="Preview"
-                  className="w-48 h-48 object-contain rounded-xl border shadow-lg"
-                  onError={(e) => (e.currentTarget.style.display = "none")}
-                />
+                <div className="relative w-48 h-48 bg-white/50 backdrop-blur-sm rounded-xl border-2 border-gray-200 overflow-hidden shadow-md">
+                  <img
+                    src={form.image}
+                    alt="Preview"
+                    className="w-full h-full object-contain p-2"
+                    onError={(e) => {
+                      e.currentTarget.src = "";
+                      e.currentTarget.alt = "Invalid image URL";
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
 
-          {/* Rating */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Rate (0-5)</label>
-              <input
-                name="rate"
-                type="number"
-                step="0.1"
-                min="0"
-                max="5"
-                value={form.rate}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 transition"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Count</label>
-              <input
-                name="count"
-                type="number"
-                min="0"
-                value={form.count}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 transition"
-              />
+          {/* Rating Section */}
+          <div className="bg-gradient-to-br from-indigo-50/50 to-purple-50/50 backdrop-blur-sm rounded-xl p-6 border border-indigo-100/50">
+            <h3 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              Product Rating
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-2">
+                  Rating (0-5) *
+                </label>
+                <input
+                  name="rate"
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="5"
+                  placeholder="4.5"
+                  value={form.rate}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition-all shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-2">
+                  Review Count *
+                </label>
+                <input
+                  name="count"
+                  type="number"
+                  min="0"
+                  placeholder="120"
+                  value={form.count}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition-all shadow-sm"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Submit */}
-          <div>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition shadow-md flex justify-center items-center gap-2 disabled:bg-gray-400"
+              type="button"
+              onClick={() => router.push("/products")}
+              className="flex-1 px-6 py-3 bg-white/70 backdrop-blur-sm text-gray-700 rounded-lg font-semibold hover:bg-white transition-all border border-gray-200"
             >
-              {loading && (
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-indigo-300/50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  {productId ? "Update Product" : "Create Product"}
+                </>
               )}
-              {loading ? "Saving..." : productId ? "Update Product" : "Create Product"}
             </button>
           </div>
-        </form>
-
-        <p className="text-center text-gray-400 text-sm mt-8">
-        </p>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
     </div>
   );
 }
